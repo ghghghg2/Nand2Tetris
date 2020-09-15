@@ -1,7 +1,7 @@
 @$i
 D = A
-@$seg
-D = M + D
+@5
+D = A + D
 @SP
 M = M - 1
 A = M

@@ -2,7 +2,9 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 
@@ -13,100 +15,140 @@ import java.util.ArrayList;
 
 public class VMTranslator {
 
-	public static void main(String[] args) {
+	public static void main(String[] args)
+	{
 		try
 		{
-			FileReader fr = new FileReader("Class1" + ".vm");
-			BufferedReader br = new BufferedReader(fr);
-			
-			FileWriter fw = new FileWriter("Class1" + ".asm");
+			String fileName = args[0];
+			FileWriter fw = new FileWriter(fileName.replace(".vm", "") + ".asm");
 			BufferedWriter bw = new BufferedWriter(fw);
 			
-			CodeWriter code = new CodeWriter(bw, "Class1");
-			
-			
-			
-			while(true)
-			{
-				String line = br.readLine();
-				if (line == null)
-				{
-					break;
-				}
-				Parser parse = new Parser(line); // split into several segments
-				if (parse.pars.size() != 0)
-				{
-					switch (parse.commandType())
-					{
-					case "C_ARITHMETIC":
-						System.out.println("***************");
-						System.out.printf("(%s, %s)\n", parse.commandType(), parse.arg1());
-						
-						code.writeArithmetic(parse.arg1());						
-						break;
-					case "C_PUSH": case "C_POP":
-						System.out.println("***************");
-						System.out.printf("(%s, %s, %d)\n", parse.commandType(), parse.arg1(), parse.arg2());
-						
-						code.writePushPop(parse.commandType(), parse.arg1(), parse.arg2());					
-						break;
-					
-					case "C_LABEL":
-						System.out.println("***************");
-						System.out.printf("(%s, %s)\n", parse.commandType(), parse.arg1());
-						
-						code.writeLabel(parse.arg1());
-						break;
-						
-					case "C_GOTO":
-						System.out.println("***************");
-						System.out.printf("(%s, %s)\n", parse.commandType(), parse.arg1());
-						
-						code.writeGoto(parse.arg1());
-						break;
-						
-					case "C_IF":
-						System.out.println("***************");
-						System.out.printf("(%s, %s)\n", parse.commandType(), parse.arg1());
-						
-						code.writeIf(parse.arg1());
-						break;
-						
-					case "C_FUNCTION":
-						System.out.println("***************");
-						System.out.printf("(%s, %s, %d)\n", parse.commandType(), parse.arg1(), parse.arg2());
-						
-						code.currentFunction = parse.arg1();
-						code.writeFunction(parse.arg1(), parse.arg2());
-						
-						break;
-					
-					case "C_CALL":
-						System.out.println("***************");
-						System.out.printf("(%s, %s, %d)\n", parse.commandType(), parse.arg1(), parse.arg2());
-						
-						code.countCall++;
-						code.writeCall(parse.arg1(), parse.arg2());
-						break;
-						
-					case "C_RETURN":
-						System.out.println("***************");
-						System.out.printf("(%s)\n", parse.commandType());
-						
-						code.writeReturn();
+			CodeWriter code = new CodeWriter(bw, fileName.replace(".vm", ""));
 
-						break;
-						
-					case "ERR":
-						System.out.printf("(%d, %s, %d)\n", parse.commandType(), parse.arg1(), parse.arg2());
-						break;
-					}
-					
+			String path = System.getProperty("user.dir") + "\\" + fileName;
+			File file = new File(path);
+			ArrayList<String> fileList = new ArrayList<String>();
+			
+			
+			if (fileName.indexOf(".vm") != -1) // check if it is a directory (or .vm file)
+			{
+				fileList.add(fileName);
+				path = System.getProperty("user.dir");
+			}
+			else
+			{
+				for (String tmp:file.list())
+				{
+					fileList.add(tmp);
 				}
 				
+				path = System.getProperty("user.dir") + "\\" + fileName;
+				System.out.println("DIR: " + path + "\\" + fileName);
+				code.writeInit();
 			}
+
 			
-			fr.close();
+			for (String f:fileList) // deal through each .vm file in the directory
+			{
+				
+				
+				
+				if (f.indexOf(".vm") != -1) // find .vm file in directory
+				{
+					code.vmFile = f.replace(".vm", ""); // for static segment
+					code.countLabel = 0; // refreshed in each .vm file
+					code.countCall = 0;  // refreshed in each .vm file
+					
+					System.out.println(path + "\\" + f);
+					
+					FileReader fr = new FileReader(path+ "\\" + f);
+					BufferedReader br = new BufferedReader(fr);
+					
+					while(true)
+					{
+						String line = br.readLine();
+						if (line == null)
+						{
+							break;
+						}
+						Parser parse = new Parser(line); // split into several segments
+						if (parse.pars.size() != 0)
+						{
+							switch (parse.commandType())
+							{
+							case "C_ARITHMETIC":
+								System.out.println("***************");
+								System.out.printf("(%s, %s)\n", parse.commandType(), parse.arg1());
+								
+								code.writeArithmetic(parse.arg1());						
+								break;
+							case "C_PUSH": case "C_POP":
+								System.out.println("***************");
+								System.out.printf("(%s, %s, %d)\n", parse.commandType(), parse.arg1(), parse.arg2());
+								
+								code.writePushPop(parse.commandType(), parse.arg1(), parse.arg2());					
+								break;
+							
+							case "C_LABEL":
+								System.out.println("***************");
+								System.out.printf("(%s, %s)\n", parse.commandType(), parse.arg1());
+								
+								code.writeLabel(parse.arg1());
+								break;
+								
+							case "C_GOTO":
+								System.out.println("***************");
+								System.out.printf("(%s, %s)\n", parse.commandType(), parse.arg1());
+								
+								code.writeGoto(parse.arg1());
+								break;
+								
+							case "C_IF":
+								System.out.println("***************");
+								System.out.printf("(%s, %s)\n", parse.commandType(), parse.arg1());
+								
+								code.writeIf(parse.arg1());
+								break;
+								
+							case "C_FUNCTION":
+								System.out.println("***************");
+								System.out.printf("(%s, %s, %d)\n", parse.commandType(), parse.arg1(), parse.arg2());
+								
+								code.currentFunction = parse.arg1();
+								code.writeFunction(parse.arg1(), parse.arg2());
+								
+								break;
+							
+							case "C_CALL":
+								System.out.println("***************");
+								System.out.printf("(%s, %s, %d)\n", parse.commandType(), parse.arg1(), parse.arg2());
+								
+								code.countCall++;
+								code.writeCall(parse.arg1(), parse.arg2());
+								break;
+								
+							case "C_RETURN":
+								System.out.println("***************");
+								System.out.printf("(%s)\n", parse.commandType());
+								
+								code.writeReturn();
+
+								break;
+								
+							case "ERR":
+								System.out.printf("(%d, %s, %d)\n", parse.commandType(), parse.arg1(), parse.arg2());
+								break;
+							}
+							
+						}
+						
+					}
+					
+					fr.close();
+					
+					 
+				} // end if (find .vm file in directory)
+			} // end for loop (fileList)
 			fw.close();
 		}
 		catch (IOException ex) {
@@ -139,6 +181,8 @@ class Parser
 			{
 				if (seg.length() > 0)
 				{
+					seg = seg.replace("\t", "");
+					seg = seg.replace(" ", "");
 					this.pars.add(seg);
 				}						
 			}
@@ -252,7 +296,7 @@ class Parser
 class CodeWriter
 {
 	BufferedWriter bw;
-	String vmFile;
+	String vmFile; // for static segment
 	String currentFunction;
 	int countLabel; // for eq, gt, lt command's (END) label
 	int countCall; // count the "call"
@@ -344,7 +388,7 @@ class CodeWriter
 					if (line.indexOf("$") != -1)
 					{
 						line = line.replace("$i", Integer.toString(i));
-						line = line.replace("$s", "LCL");
+						line = line.replace("$seg", "LCL");
 					}					
 					System.out.println(line);
 					this.bw.write(line);
@@ -355,7 +399,7 @@ class CodeWriter
 					if (line.indexOf("$") != -1)
 					{
 						line = line.replace("$i", Integer.toString(i));
-						line = line.replace("$s", "ARG");
+						line = line.replace("$seg", "ARG");
 					}
 					System.out.println(line);
 					this.bw.write(line);
@@ -366,7 +410,7 @@ class CodeWriter
 					if (line.indexOf("$") != -1)
 					{
 						line = line.replace("$i", Integer.toString(i));
-						line = line.replace("$s", "THIS");
+						line = line.replace("$seg", "THIS");
 					}
 					System.out.println(line);
 					this.bw.write(line);
@@ -377,7 +421,7 @@ class CodeWriter
 					if (line.indexOf("$") != -1)
 					{
 						line = line.replace("$i", Integer.toString(i));
-						line = line.replace("$s", "THAT");
+						line = line.replace("$seg", "THAT");
 					}
 					System.out.println(line);
 					this.bw.write(line);
@@ -427,11 +471,11 @@ class CodeWriter
 					{
 						if (i == 0)
 						{
-							line = line.replace("$s", "THIS");
+							line = line.replace("$seg", "THIS");
 						}
 						else if (i == 1)
 						{
-							line = line.replace("$s", "THAT");
+							line = line.replace("$seg", "THAT");
 						}
 						else
 						{
@@ -542,7 +586,7 @@ class CodeWriter
 				{
 					line = line.replace("$currentFunction", this.currentFunction);
 					line = line.replace("$functionName", functionName);
-					line = line.replace("$countCall", "$" + Integer.toString(this.countCall));
+					line = line.replace("$countCall", Integer.toString(this.countCall));
 					line = line.replace("$nArgs", "$" + Integer.toString(nArgs));
 				}
 				System.out.println(line);
@@ -627,6 +671,22 @@ class CodeWriter
 
 
 	}// end writeReturn method
+	
+	void writeInit()
+	{
+		try
+		{
+			System.out.println("@256\nD=A\n@SP\nM=D");
+			this.bw.write("@256\nD=A\n@SP\nM=D");
+			this.bw.newLine();
+			this.bw.flush();
+			this.writeCall("Sys.init", 0);
+		}
+		catch (IOException ex) 
+		{
+			System.out.println("ÀÉ®×¸ü¤J¥¢±Ñ");
+		}
+	}// end writeInit method
 	
 	
 }// end codeWriter class
