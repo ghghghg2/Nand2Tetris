@@ -2,5 +2,5 @@
 M = M - 1
 A = M
 D = M
-@$s
+@$seg
 M = D

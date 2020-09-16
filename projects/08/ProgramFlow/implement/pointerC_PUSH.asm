@@ -1,4 +1,4 @@
-@$s
+@$seg
 D = M
 @SP
 A = M
