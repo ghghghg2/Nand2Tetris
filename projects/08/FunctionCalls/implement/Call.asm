@@ -1,3 +1,4 @@
+// ====Call====
 @$currentFunction$ret.$countCall
 D=A
 @SP
@@ -37,8 +38,9 @@ A=M
 M=D
 @SP
 M=M+1
+// ARG = SP-5-nArgs
 @SP
-D=A
+D=M
 @5
 D=D-A  // D = SP - 5
 @$nArgs

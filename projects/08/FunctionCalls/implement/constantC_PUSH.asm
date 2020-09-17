@@ -1,3 +1,4 @@
+// ====push const====
 @$i
 D = A
 @SP

@@ -1,3 +1,4 @@
+// ====push pointer====
 @$seg
 D = M
 @SP

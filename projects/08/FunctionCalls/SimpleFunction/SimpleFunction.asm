@@ -13,6 +13,7 @@ A=M
 M=D
 @SP
 M=M+1
+// ====push====
 @0 // replace by input i
 D = A
 @LCL // replace by LCL, ARG, THIS, THAT
@@ -23,6 +24,7 @@ A = M
 M = D
 @SP
 M = M + 1
+// ====push====
 @1 // replace by input i
 D = A
 @LCL // replace by LCL, ARG, THIS, THAT
@@ -33,15 +35,18 @@ A = M
 M = D
 @SP
 M = M + 1
+// ====add====
 @SP
 M = M-1
 A = M
 D = M
 A = A - 1
 M = M + D
+// ====not====
 @SP
 A = M - 1
 M = !M
+// ====push====
 @0 // replace by input i
 D = A
 @ARG // replace by LCL, ARG, THIS, THAT
@@ -52,12 +57,14 @@ A = M
 M = D
 @SP
 M = M + 1
+// ====add====
 @SP
 M = M-1
 A = M
 D = M
 A = A - 1
 M = M + D
+// ====push====
 @1 // replace by input i
 D = A
 @ARG // replace by LCL, ARG, THIS, THAT
@@ -68,28 +75,31 @@ A = M
 M = D
 @SP
 M = M + 1
+// ====sub====
 @SP
 M = M-1
 A = M
 D = M
 A = A - 1
 M = M - D
+// ====Return====
 @LCL
-D=A
+D=M
 @5
-D=D-A
-A=D
-D=M // D=*(LCL-5)
+AD = D - A
+D=M
 @R13
-M=D // M[R13]=*(LCL-5)
+M=D
 @SP
-A=M-1
+AM=M-1
 D=M
 @ARG
-M=D // M[ARG] = pop()
-D=A+1 
+A=M
+M=D
+@ARG
+D=M+1
 @SP
-M=D // SP = ARG+1
+M=D
 @LCL
 A=M-1
 D=M
@@ -117,4 +127,5 @@ D=M
 @LCL
 M=D
 @R13
+A=M
 0;JMP

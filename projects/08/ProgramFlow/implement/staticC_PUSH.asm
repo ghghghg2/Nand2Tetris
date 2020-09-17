@@ -1,3 +1,4 @@
+// ====push static====
 @$vm.$i
 D = M
 @SP

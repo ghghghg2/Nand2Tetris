@@ -2,6 +2,7 @@
 D=A
 @SP
 M=D
+// ====Call====
 @$ret.0
 D=A
 @SP
@@ -41,12 +42,13 @@ A=M
 M=D
 @SP
 M=M+1
+// ARG = SP-5-nArgs
 @SP
-D=A
+D=M
 @5
 D=D-A  // D = SP - 5
-@$0
-D = D - A  // D = SP - 5 - $0
+@0
+D = D - A  // D = SP - 5 - 0
 @ARG
 M=D
 @SP
@@ -57,6 +59,7 @@ M=D  //LCL = SP
 0;JMP
 ($ret.0)
 (Class1.set)
+// ====push====
 @0 // replace by input i
 D = A
 @ARG // replace by LCL, ARG, THIS, THAT
@@ -67,12 +70,14 @@ A = M
 M = D
 @SP
 M = M + 1
+// ====pop static====
 @SP
 M = M - 1
 A = M
 D = M
 @Class1.0
 M = D
+// ====push====
 @1 // replace by input i
 D = A
 @ARG // replace by LCL, ARG, THIS, THAT
@@ -83,12 +88,14 @@ A = M
 M = D
 @SP
 M = M + 1
+// ====pop static====
 @SP
 M = M - 1
 A = M
 D = M
 @Class1.1
 M = D
+// ====push const====
 @0
 D = A
 @SP
@@ -96,22 +103,24 @@ A = M
 M = D
 @SP
 M = M + 1
+// ====Return====
 @LCL
-D=A
+D=M
 @5
-D=D-A
-A=D
-D=M // D=*(LCL-5)
+AD = D - A
+D=M
 @R13
-M=D // M[R13]=*(LCL-5)
+M=D
 @SP
-A=M-1
+AM=M-1
 D=M
 @ARG
-M=D // M[ARG] = pop()
-D=A+1 
+A=M
+M=D
+@ARG
+D=M+1
 @SP
-M=D // SP = ARG+1
+M=D
 @LCL
 A=M-1
 D=M
@@ -139,8 +148,10 @@ D=M
 @LCL
 M=D
 @R13
+A=M
 0;JMP
 (Class1.get)
+// ====push static====
 @Class1.0
 D = M
 @SP
@@ -148,6 +159,7 @@ A = M
 M = D
 @SP
 M = M + 1
+// ====push static====
 @Class1.1
 D = M
 @SP
@@ -155,28 +167,31 @@ A = M
 M = D
 @SP
 M = M + 1
+// ====sub====
 @SP
 M = M-1
 A = M
 D = M
 A = A - 1
 M = M - D
+// ====Return====
 @LCL
-D=A
+D=M
 @5
-D=D-A
-A=D
-D=M // D=*(LCL-5)
+AD = D - A
+D=M
 @R13
-M=D // M[R13]=*(LCL-5)
+M=D
 @SP
-A=M-1
+AM=M-1
 D=M
 @ARG
-M=D // M[ARG] = pop()
-D=A+1 
+A=M
+M=D
+@ARG
+D=M+1
 @SP
-M=D // SP = ARG+1
+M=D
 @LCL
 A=M-1
 D=M
@@ -204,8 +219,10 @@ D=M
 @LCL
 M=D
 @R13
+A=M
 0;JMP
 (Class2.set)
+// ====push====
 @0 // replace by input i
 D = A
 @ARG // replace by LCL, ARG, THIS, THAT
@@ -216,12 +233,14 @@ A = M
 M = D
 @SP
 M = M + 1
+// ====pop static====
 @SP
 M = M - 1
 A = M
 D = M
 @Class2.0
 M = D
+// ====push====
 @1 // replace by input i
 D = A
 @ARG // replace by LCL, ARG, THIS, THAT
@@ -232,12 +251,14 @@ A = M
 M = D
 @SP
 M = M + 1
+// ====pop static====
 @SP
 M = M - 1
 A = M
 D = M
 @Class2.1
 M = D
+// ====push const====
 @0
 D = A
 @SP
@@ -245,22 +266,24 @@ A = M
 M = D
 @SP
 M = M + 1
+// ====Return====
 @LCL
-D=A
+D=M
 @5
-D=D-A
-A=D
-D=M // D=*(LCL-5)
+AD = D - A
+D=M
 @R13
-M=D // M[R13]=*(LCL-5)
+M=D
 @SP
-A=M-1
+AM=M-1
 D=M
 @ARG
-M=D // M[ARG] = pop()
-D=A+1 
+A=M
+M=D
+@ARG
+D=M+1
 @SP
-M=D // SP = ARG+1
+M=D
 @LCL
 A=M-1
 D=M
@@ -288,8 +311,10 @@ D=M
 @LCL
 M=D
 @R13
+A=M
 0;JMP
 (Class2.get)
+// ====push static====
 @Class2.0
 D = M
 @SP
@@ -297,6 +322,7 @@ A = M
 M = D
 @SP
 M = M + 1
+// ====push static====
 @Class2.1
 D = M
 @SP
@@ -304,28 +330,31 @@ A = M
 M = D
 @SP
 M = M + 1
+// ====sub====
 @SP
 M = M-1
 A = M
 D = M
 A = A - 1
 M = M - D
+// ====Return====
 @LCL
-D=A
+D=M
 @5
-D=D-A
-A=D
-D=M // D=*(LCL-5)
+AD = D - A
+D=M
 @R13
-M=D // M[R13]=*(LCL-5)
+M=D
 @SP
-A=M-1
+AM=M-1
 D=M
 @ARG
-M=D // M[ARG] = pop()
-D=A+1 
+A=M
+M=D
+@ARG
+D=M+1
 @SP
-M=D // SP = ARG+1
+M=D
 @LCL
 A=M-1
 D=M
@@ -353,8 +382,10 @@ D=M
 @LCL
 M=D
 @R13
+A=M
 0;JMP
 (Sys.init)
+// ====push const====
 @6
 D = A
 @SP
@@ -362,6 +393,7 @@ A = M
 M = D
 @SP
 M = M + 1
+// ====push const====
 @8
 D = A
 @SP
@@ -369,6 +401,7 @@ A = M
 M = D
 @SP
 M = M + 1
+// ====Call====
 @Sys.init$ret.1
 D=A
 @SP
@@ -408,12 +441,13 @@ A=M
 M=D
 @SP
 M=M+1
+// ARG = SP-5-nArgs
 @SP
-D=A
+D=M
 @5
 D=D-A  // D = SP - 5
-@$2
-D = D - A  // D = SP - 5 - $2
+@2
+D = D - A  // D = SP - 5 - 2
 @ARG
 M=D
 @SP
@@ -423,6 +457,7 @@ M=D  //LCL = SP
 @Class1.set
 0;JMP
 (Sys.init$ret.1)
+// ====pop temp====
 @0
 D = A
 @5
@@ -433,6 +468,7 @@ A = M
 D = D + M
 A = D - M
 M = D - A
+// ====push const====
 @23
 D = A
 @SP
@@ -440,6 +476,7 @@ A = M
 M = D
 @SP
 M = M + 1
+// ====push const====
 @15
 D = A
 @SP
@@ -447,6 +484,7 @@ A = M
 M = D
 @SP
 M = M + 1
+// ====Call====
 @Sys.init$ret.2
 D=A
 @SP
@@ -486,12 +524,13 @@ A=M
 M=D
 @SP
 M=M+1
+// ARG = SP-5-nArgs
 @SP
-D=A
+D=M
 @5
 D=D-A  // D = SP - 5
-@$2
-D = D - A  // D = SP - 5 - $2
+@2
+D = D - A  // D = SP - 5 - 2
 @ARG
 M=D
 @SP
@@ -501,6 +540,7 @@ M=D  //LCL = SP
 @Class2.set
 0;JMP
 (Sys.init$ret.2)
+// ====pop temp====
 @0
 D = A
 @5
@@ -511,6 +551,7 @@ A = M
 D = D + M
 A = D - M
 M = D - A
+// ====Call====
 @Sys.init$ret.3
 D=A
 @SP
@@ -550,12 +591,13 @@ A=M
 M=D
 @SP
 M=M+1
+// ARG = SP-5-nArgs
 @SP
-D=A
+D=M
 @5
 D=D-A  // D = SP - 5
-@$0
-D = D - A  // D = SP - 5 - $0
+@0
+D = D - A  // D = SP - 5 - 0
 @ARG
 M=D
 @SP
@@ -565,6 +607,7 @@ M=D  //LCL = SP
 @Class1.get
 0;JMP
 (Sys.init$ret.3)
+// ====Call====
 @Sys.init$ret.4
 D=A
 @SP
@@ -604,12 +647,13 @@ A=M
 M=D
 @SP
 M=M+1
+// ARG = SP-5-nArgs
 @SP
-D=A
+D=M
 @5
 D=D-A  // D = SP - 5
-@$0
-D = D - A  // D = SP - 5 - $0
+@0
+D = D - A  // D = SP - 5 - 0
 @ARG
 M=D
 @SP

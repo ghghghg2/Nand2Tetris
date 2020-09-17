@@ -1,19 +1,21 @@
+// ====Return====
 @LCL
-D=A
+D=M
 @5
-D=D-A
-A=D
-D=M // D=*(LCL-5)
+AD = D - A
+D=M
 @R13
-M=D // M[R13]=*(LCL-5)
+M=D
 @SP
-A=M-1
+AM=M-1
 D=M
 @ARG
-M=D // M[ARG] = pop()
-D=A+1 
+A=M
+M=D
+@ARG
+D=M+1
 @SP
-M=D // SP = ARG+1
+M=D
 @LCL
 A=M-1
 D=M
@@ -41,4 +43,5 @@ D=M
 @LCL
 M=D
 @R13
+A=M
 0;JMP

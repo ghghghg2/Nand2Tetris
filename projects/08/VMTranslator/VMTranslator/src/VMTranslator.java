@@ -20,7 +20,7 @@ public class VMTranslator {
 		try
 		{
 			String fileName = args[0];
-			FileWriter fw = new FileWriter(fileName.replace(".vm", "") + ".asm");
+			FileWriter fw = new FileWriter((fileName.indexOf(".vm") != -1)? fileName.replace(".vm", "") + ".asm":fileName + "\\" + fileName.replace(".vm", "") + ".asm");
 			BufferedWriter bw = new BufferedWriter(fw);
 			
 			CodeWriter code = new CodeWriter(bw, fileName.replace(".vm", ""));
@@ -587,7 +587,7 @@ class CodeWriter
 					line = line.replace("$currentFunction", this.currentFunction);
 					line = line.replace("$functionName", functionName);
 					line = line.replace("$countCall", Integer.toString(this.countCall));
-					line = line.replace("$nArgs", "$" + Integer.toString(nArgs));
+					line = line.replace("$nArgs", Integer.toString(nArgs));
 				}
 				System.out.println(line);
 				this.bw.write(line);
